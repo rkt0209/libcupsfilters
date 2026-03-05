@@ -1319,7 +1319,7 @@ finish_page(struct pdf_info *info,
     {
       yAnchor -= info->pclm_strip_height[i];
       bytes = snprintf(strip_cmd, sizeof(strip_cmd),
-                       "/P <</MCID 0>> BDC q\n%u 0 0 %u 0 %u cm\n/Image%0*d Do Q\n",
+                       "/P <</MCID 0>> BDC q\n%u 0 0 %u 0 %u cm\n/Image%0*u Do Q\n",
                        info->width,
                        info->pclm_strip_height[i],
                        yAnchor,

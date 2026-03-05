@@ -530,14 +530,14 @@ _cfFontEmbedOTFGetTable(_cf_fontembed_otf_file_t *otf,
     unsigned int csum = __cfFontEmbedOTFCheckSum(ret, table->length);
     if (tag==_CF_FONTEMBED_OTF_TAG('h', 'e', 'a', 'd')) // special case
       csum -= __cfFontEmbedGetULong(ret + 8);
-    if (csum != table->checkSum)
-    {
-      fprintf(stderr, "Wrong checksum for %c%c%c%c\n",
-	      _CF_FONTEMBED_OTF_UNTAG(tag));
-      free(ret);
-      return (NULL);
-    }
-  }
+      if (csum != table->checkSum)
+      {
+        fprintf(stderr, "Wrong checksum for %c%c%c%c\n",
+                (int)(tag >> 24), (int)((tag >> 16) & 0xff),
+                (int)((tag >> 8) & 0xff), (int)(tag & 0xff));
+        free(ret);
+        return (NULL);
+      }
   *ret_len = table->length;
   return (ret);
 }

@@ -1114,16 +1114,16 @@ run_test(
   cups_array_t *filter_chain = NULL;
   char *filter_chain_str = NULL;
 
-  char* make = (char*) malloc(100 * sizeof(char*));
-  char* model = (char*) malloc(100 * sizeof(char*));
+  char* make = (char*) malloc(100 * sizeof(char));
+  char* model = (char*) malloc(100 * sizeof(char));
    
   int ppm = 1;
    
-  char* inputFileName = (char*) malloc(100 * sizeof(char*));
-  char* outputFileName = (char*) malloc(100 * sizeof(char*));
+  char* inputFileName = (char*) malloc(100 * sizeof(char));
+  char* outputFileName = (char*) malloc(100 * sizeof(char));
    
-  char* inputContentType = (char*) malloc(100 * sizeof(char*));
-  char* outputContentType = (char*) malloc(100 * sizeof(char*));
+  char* inputContentType = (char*) malloc(100 * sizeof(char));
+  char* outputContentType = (char*) malloc(100 * sizeof(char));
    
   // ppm_color and duplex should be supplied...
   int color = 0;
@@ -1246,7 +1246,7 @@ run_test(
 
        clargs = tmp_clargs;
 
-       char* tmp_token = (char*)malloc(100 * sizeof(char *));
+       char* tmp_token = (char*)malloc(100 * sizeof(char));
        if (!tmp_token)
        {
          for (int i = 0; i < token_index; i ++)

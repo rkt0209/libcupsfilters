@@ -207,7 +207,7 @@ aglfn13(unsigned short uni)
 {
   if ((uni >= 0x0020) && (uni < 0x007f))
     return (agl_l207e[uni-0x0020]);
-  else if ((uni >= 0x00a1) && (uni < 0x0100))
+    else if ((uni >= 0x00a1) && (uni <= 0x00ff))
     return (agl_la1ff[uni-0x00a1]);
   else if ((uni >= 0x0100) && (uni <= 0x017f))
     return (agl_l1007f[uni-0x0100]);

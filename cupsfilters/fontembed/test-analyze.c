@@ -48,25 +48,25 @@ show_post(_cf_fontembed_otf_file_t *otf) // {{{
     return;
   }
   // TODO: check len
-  printf("POST: (%u bytes)\n"
-         "  version: %08x\n"
-         "  italicAngle: %d.%d\n"
-         "  underlinePosition: %d\n"
-         "  underlineThickness: %d\n"
-         "  isFixedPitch: %d\n"
-         "  vmType42: %u %u\n"
-         "  vmType1: %u %u\n",
-	 len,
-         __cfFontEmbedGetULong(buf),
-         __cfFontEmbedGetLong(buf + 4) >> 16,
-	 __cfFontEmbedGetULong(buf + 4) & 0xffff,
-         __cfFontEmbedGetShort(buf + 8),
-         __cfFontEmbedGetShort(buf + 10),
-         __cfFontEmbedGetULong(buf + 12),
-         __cfFontEmbedGetULong(buf + 16),
-	 __cfFontEmbedGetULong(buf + 20),
-         __cfFontEmbedGetULong(buf + 24),
-	 __cfFontEmbedGetULong(buf + 38));
+  printf("POST: (%d bytes)\n"
+          "  version: %08x\n"
+          "  italicAngle: %d.%u\n"
+          "  underlinePosition: %d\n"
+          "  underlineThickness: %d\n"
+          "  isFixedPitch: %u\n"
+          "  vmType42: %u %u\n"
+          "  vmType1: %u %u\n",
+    len,
+          (unsigned int)__cfFontEmbedGetULong(buf),
+          (int)(__cfFontEmbedGetLong(buf + 4) >> 16),
+          (unsigned int)(__cfFontEmbedGetULong(buf + 4) & 0xffff),
+          __cfFontEmbedGetShort(buf + 8),
+          __cfFontEmbedGetShort(buf + 10),
+          (unsigned int)__cfFontEmbedGetULong(buf + 12),
+          (unsigned int)__cfFontEmbedGetULong(buf + 16),
+          (unsigned int)__cfFontEmbedGetULong(buf + 20),
+          (unsigned int)__cfFontEmbedGetULong(buf + 24),
+          (unsigned int)__cfFontEmbedGetULong(buf + 38));
   free(buf);
 }
 // }}}
@@ -150,13 +150,15 @@ show_cmap(_cf_fontembed_otf_file_t *otf) // {{{
     const char *nrec = cmap + 4 + 8 * iA;
     const char *ndata = cmap + __cfFontEmbedGetULong(nrec + 4);
     DEBUG_assert(ndata >= cmap + 4 + 8 * numTables);
-    printf("  platformID/encodingID: %d/%d\n"
-           "  offset: %d  data (format: %d, length: %d, language: %d);\n",
-           __cfFontEmbedGetUShort(nrec), __cfFontEmbedGetUShort(nrec + 2),
-           __cfFontEmbedGetULong(nrec + 4),
-           __cfFontEmbedGetUShort(ndata), __cfFontEmbedGetUShort(ndata + 2),
-	   __cfFontEmbedGetUShort(ndata + 4));
-  }
+    printf("  platformID/encodingID: %u/%u\n"
+      "  offset: %u  data (format: %u, length: %u, language: %u);\n",
+      (unsigned int)__cfFontEmbedGetUShort(nrec), 
+      (unsigned int)__cfFontEmbedGetUShort(nrec + 2),
+      (unsigned int)__cfFontEmbedGetULong(nrec + 4),
+      (unsigned int)__cfFontEmbedGetUShort(ndata), 
+      (unsigned int)__cfFontEmbedGetUShort(ndata + 2),
+      (unsigned int)__cfFontEmbedGetUShort(ndata + 4));
+}
   free(cmap);
 }
 // }}}
