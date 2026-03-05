@@ -48,14 +48,14 @@ show_post(_cf_fontembed_otf_file_t *otf) // {{{
     return;
   }
   // TODO: check len
-  printf("POST: (%d bytes)\n"
+  printf("POST: (%u bytes)\n"
          "  version: %08x\n"
          "  italicAngle: %d.%d\n"
          "  underlinePosition: %d\n"
          "  underlineThickness: %d\n"
          "  isFixedPitch: %d\n"
-         "  vmType42: %d %d\n"
-         "  vmType1: %d %d\n",
+         "  vmType42: %u %u\n"
+         "  vmType1: %u %u\n",
 	 len,
          __cfFontEmbedGetULong(buf),
          __cfFontEmbedGetLong(buf + 4) >> 16,
@@ -94,14 +94,14 @@ show_name(_cf_fontembed_otf_file_t *otf) // {{{
   for (iA = 0; iA < name_count; iA ++)
   {
     const char *nrec = buf + 6 + 12 * iA;
-    printf("  { platformID/encodingID/languageID/nameID: %d/%d/%d/%d\n"
-           "    length: %d, offset: %d, data                       :",
-           __cfFontEmbedGetUShort(nrec),
-           __cfFontEmbedGetUShort(nrec + 2),
-           __cfFontEmbedGetUShort(nrec + 4),
-           __cfFontEmbedGetUShort(nrec + 6),
-           __cfFontEmbedGetUShort(nrec + 8),
-           __cfFontEmbedGetUShort(nrec + 10));
+    printf("  { platformID/encodingID/languageID/nameID: %u/%u/%u/%u\n"
+           "    length: %u, offset: %u, data                       :",
+           (unsigned)__cfFontEmbedGetUShort(nrec),
+           (unsigned)__cfFontEmbedGetUShort(nrec + 2),
+           (unsigned)__cfFontEmbedGetUShort(nrec + 4),
+           (unsigned)__cfFontEmbedGetUShort(nrec + 6),
+           (unsigned)__cfFontEmbedGetUShort(nrec + 8),
+           (unsigned)__cfFontEmbedGetUShort(nrec + 10));
     if ((__cfFontEmbedGetUShort(nrec) == 0) ||
 	(__cfFontEmbedGetUShort(nrec) == 3)) // WCHAR
     {
@@ -258,8 +258,13 @@ main(int argc,
   int iA;
   for (iA=0; iA < otf->numTables; iA ++)
   {
-    printf("%c%c%c%c %d @%d\n", _CF_FONTEMBED_OTF_UNTAG(otf->tables[iA].tag),
-	   otf->tables[iA].length, otf->tables[iA].offset);
+    printf("%c%c%c%c %u @%u\n",
+	   (int)((otf->tables[iA].tag >> 24) & 255),
+	   (int)((otf->tables[iA].tag >> 16) & 255),
+	   (int)((otf->tables[iA].tag >> 8) & 255),
+	   (int)(otf->tables[iA].tag & 255),
+	   (unsigned)otf->tables[iA].length,
+	   (unsigned)otf->tables[iA].offset);
   }
   printf("unitsPerEm: %d, indexToLocFormat: %d\n",
          otf->unitsPerEm, otf->indexToLocFormat);

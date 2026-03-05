@@ -49,6 +49,7 @@ _cfFontEmbedFontFileOpenStd(const char *name) // {{{
 
   ret->stdname = strdup(name);
 
+  // cppcheck-suppress memleak
   return (ret);
 }
 // }}}

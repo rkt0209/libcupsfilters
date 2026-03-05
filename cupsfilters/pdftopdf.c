@@ -1240,7 +1240,7 @@ special_pdfio_annotation_get_content(pdfio_obj_t  *annot,
   BBox.x2 = rect->x2 - rect->x1;
   BBox.y2 = rect->y2 - rect->y1;
   
-  pdfio_matrix_t M;
+  pdfio_matrix_t M = { 0 };
   matrix_set_identity(M);
   
   pdfio_rect_t T = matrix_transform_rect(M, BBox);
@@ -1250,7 +1250,7 @@ special_pdfio_annotation_get_content(pdfio_obj_t  *annot,
 
   double rw = rect->x2 - rect->x1, rh = rect->y2 - rect->y1;
 
-  pdfio_matrix_t AA, t, s;
+  pdfio_matrix_t AA = { 0 }, t = { 0 }, s = { 0 };
   matrix_set_identity(AA);
   
   matrix_translate(t, rect->x1, rect->y1);
@@ -1334,9 +1334,9 @@ pdfio_annotation_get_content(pdfio_obj_t  *annot,
     BBox.y2 = rect->y2 - rect->y1;
   }
   
-  pdfio_matrix_t M;
+  pdfio_matrix_t M = { 0 };
   matrix_set_identity(M);
-  pdfio_matrix_t tmp;
+  pdfio_matrix_t tmp = { 0 };
   if (get_pdf_matrix(appearance_N_dict, "Matrix", tmp)) 
   {
     matrix_copy(M, tmp);
@@ -1345,9 +1345,9 @@ pdfio_annotation_get_content(pdfio_obj_t  *annot,
   int do_rotate = (page_rotate != 0) && (flags & an_no_rotate);
   if (do_rotate) 
   {
-    pdfio_matrix_t R;
+    pdfio_matrix_t R = { 0 };
     matrix_rotatex90(R, page_rotate);
-    pdfio_matrix_t MR;
+    pdfio_matrix_t MR = { 0 };
     matrix_concat(MR, R, M);
     matrix_copy(M, MR);
 
@@ -1386,7 +1386,7 @@ pdfio_annotation_get_content(pdfio_obj_t  *annot,
 
   double rw = rect->x2 - rect->x1, rh = rect->y2 - rect->y1;
 
-  pdfio_matrix_t AA, t, s;
+  pdfio_matrix_t AA = { 0 }, t = { 0 }, s = { 0 };
   matrix_set_identity(AA);
   
   matrix_translate(t, rect->x1, rect->y1);
@@ -1596,12 +1596,13 @@ flatten_pdf(xform_prepare_t *p,			// I - Preparation data
       
       char *name = (char *)malloc(sizeof(char) * 32);
       snprintf(name, 32, "/Fxo%d", next_fx);
-      content = pdfio_annotation_get_content(Annot_obj, name, rotate_val, 
-		      			     forbidden_flags, required_flags);
-      fprintf(stderr, "%s\n", content);
-      
-      if(content && content[0] != '\0') 
+      content = pdfio_annotation_get_content(Annot_obj, name, rotate_val,
+					     forbidden_flags, required_flags);
+
+      if (content && content[0] != '\0')
       { 
+	fprintf(stderr, "%s\n", content);
+
 	pdfio_obj_t 	*form_xobj;
 	pdfio_dict_t 	*page_resources,	// Page Resources Dict
 			*xobj_dict,		// Page XObject Dict
@@ -2345,7 +2346,7 @@ prepare_documents(
   xform_page_t		*outpage;	// Current output page
   int			outdir;		// Output direction
   bool			reverse_order;	// Should output be in reverse order?
-  size_t		layout;		// Layout cell
+  size_t		layout = 0;	// Layout cell
   int			document;	// Document number
   int			page;		// Current page number
   bool			duplex = !strncmp(options->sides, "two-sided-", 10);

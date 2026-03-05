@@ -1157,7 +1157,7 @@ cfFilterPCLmToRaster(int inputfd,         // I - File descriptor input stream
   char			buffer[8192];		// Copy buffer
   int			bytes;			// Bytes copied
   int			npages = 0;
-  pdfio_file_t		*pdf = (pdfio_file_t *)malloc(sizeof(pdfio_file_t *));;
+  pdfio_file_t		*pdf = NULL;
   cups_raster_t		*raster;
   pclmtoraster_data_t	pclmtoraster_data;
   pclm_conversion_function_t convert;
@@ -1191,6 +1191,7 @@ cfFilterPCLmToRaster(int inputfd,         // I - File descriptor input stream
       if (log) log(ld, CF_LOGLEVEL_DEBUG,
 		   "cfFilterPCLmToRaster: Unable to open input data stream.");
     }
+    free(pdf);
     return (1);
   }
 
@@ -1200,6 +1201,7 @@ cfFilterPCLmToRaster(int inputfd,         // I - File descriptor input stream
 		 "cfFilterPCLmToRaster: Unable to copy PDF file: %s",
 		 strerror(errno));
     fclose(inputfp);
+    free(pdf);
     return (1);
   }
 

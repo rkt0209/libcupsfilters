@@ -312,6 +312,7 @@ banner_new_from_file(const char *filename,
   if (f)
     fclose(f);
 
+  // cppcheck-suppress memleak
   return (banner);
 }
 
@@ -600,13 +601,18 @@ generate_banner_pdf(banner_t *banner,
   float media_limits[4];
   float page_scale;
   unsigned copies;
-  ipp_t *printer_attrs = data->printer_attrs;
+  ipp_t *printer_attrs;
   ipp_attribute_t *ipp_attr;
   char buf2[1024];
   const char *value;
 #ifndef HAVE_OPEN_MEMSTREAM
   struct stat st;
 #endif
+
+  if (!data)
+    return (1);
+
+  printer_attrs = data->printer_attrs;
 
   if (!(doc = cfPDFLoadTemplate(banner->template_file)))
   {
@@ -618,8 +624,7 @@ generate_banner_pdf(banner_t *banner,
 
   for (i = 0; i < 4; i ++)
     media_limits[i] = -1.0;
-  if (data != NULL)
-  {
+
     cfGetPageDimensions(data->printer_attrs, data->job_attrs,
 			num_options, options,
 			data->header, 0,
@@ -633,9 +638,8 @@ generate_banner_pdf(banner_t *banner,
 				 &(media_limits[2]), &(media_limits[3]),
 				 log, ld);
 
-    media_limits[2] = page_width - media_limits[2];
-    media_limits[3] = page_length - media_limits[3];
-  }
+  media_limits[2] = page_width - media_limits[2];
+  media_limits[3] = page_length - media_limits[3];
 
   if (cfPDFResizePage(doc, 1, page_width, page_length, &page_scale) != 0)
   {

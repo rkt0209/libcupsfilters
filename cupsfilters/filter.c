@@ -1167,12 +1167,21 @@ cfFilterExternal(int inputfd,              // I - File descriptor input stream
       if (strcasecmp(opt->value, "true") == 0 ||
 	  strcasecmp(opt->value, "false") == 0)
       {
-	options_str =
-	  (char *)realloc(options_str,
-			  ((options_str ? strlen(options_str) : 0) +
-			   strlen(opt->name) +
-			   (strcasecmp(opt->value, "false") == 0 ? 2 : 0) + 2) *
-			  sizeof(char));
+	size_t new_size =
+	  ((options_str ? strlen(options_str) : 0) +
+	   strlen(opt->name) +
+	   (strcasecmp(opt->value, "false") == 0 ? 2 : 0) + 2) *
+	  sizeof(char);
+	char *tmp = (char *)realloc(options_str, new_size);
+
+	if (!tmp)
+	{
+	  free(options_str);
+	  options_str = NULL;
+	  break;
+	}
+
+	options_str = tmp;
 	if (i == 0)
 	  options_str[0] = '\0';
 	sprintf(options_str + strlen(options_str), " %s%s",
@@ -1180,11 +1189,20 @@ cfFilterExternal(int inputfd,              // I - File descriptor input stream
       }
       else
       {
-	options_str =
-	  (char *)realloc(options_str,
-			  ((options_str ? strlen(options_str) : 0) +
-			   strlen(opt->name) + strlen(opt->value) + 3) *
-			  sizeof(char));
+	size_t new_size =
+	  ((options_str ? strlen(options_str) : 0) +
+	   strlen(opt->name) + strlen(opt->value) + 3) *
+	  sizeof(char);
+	char *tmp = (char *)realloc(options_str, new_size);
+
+	if (!tmp)
+	{
+	  free(options_str);
+	  options_str = NULL;
+	  break;
+	}
+
+	options_str = tmp;
 	if (i == 0)
 	  options_str[0] = '\0';
 	sprintf(options_str + strlen(options_str), " %s=%s", opt->name,

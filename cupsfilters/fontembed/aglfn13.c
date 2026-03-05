@@ -207,13 +207,13 @@ aglfn13(unsigned short uni)
 {
   if ((uni >= 0x0020) && (uni < 0x007f))
     return (agl_l207e[uni-0x0020]);
-  else if ((uni >= 0x00a1) && (uni <= 0x00ff))
+  else if ((uni >= 0x00a1) && (uni < 0x0100))
     return (agl_la1ff[uni-0x00a1]);
   else if ((uni >= 0x0100) && (uni <= 0x017f))
     return (agl_l1007f[uni-0x0100]);
   else if (uni >= 0x0180)
   {
-    struct agl_lt key, *res;
+    struct agl_lt key = { 0 }, *res;
     key.uid = uni;
     res = bsearch(&key, agl_lxx, (sizeof(agl_lxx) / sizeof(struct agl_lt)),
 		  sizeof(struct agl_lt), agl_cmp);

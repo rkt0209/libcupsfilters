@@ -397,13 +397,37 @@ split_strings(const char *str,
     {
       if (in_token) 
       {
-        current = realloc(current, current_len + 1);
-       	current[current_len] = '\0';
+	char *tmp = realloc(current, current_len + 1);
+
+	if (!tmp)
+	{
+	  free(current);
+	  for (int i = 0; i < *count; i ++)
+	    free(result[i]);
+	  free(result);
+	  *count = 0;
+	  return NULL;
+	}
+
+	current = tmp;
+	current[current_len] = '\0';
       
         if (*count >= max_tokens) 
 	{
       	  max_tokens = (*count == 0) ? 4 : max_tokens * 2;
-	  result = realloc(result, max_tokens * sizeof(char *));
+	  char **r_tmp = realloc(result, max_tokens * sizeof(char *));
+
+	  if (!r_tmp)
+	  {
+	    free(current);
+	    for (int i = 0; i < *count; i ++)
+	      free(result[i]);
+	    free(result);
+	    *count = 0;
+	    return NULL;
+	  }
+
+	  result = r_tmp;
        	}
        	result[(*count)++] = current;
  
@@ -416,7 +440,21 @@ split_strings(const char *str,
     {
       if (!in_token) 
 	in_token = true;
-      current = realloc(current, current_len + 1);
+      {
+	char *tmp = realloc(current, current_len + 1);
+
+	if (!tmp)
+	{
+	  free(current);
+	  for (int i = 0; i < *count; i ++)
+	    free(result[i]);
+	  free(result);
+	  *count = 0;
+	  return NULL;
+	}
+
+	current = tmp;
+      }
       current[current_len++] = *str;
     }
     str++;
@@ -424,11 +462,35 @@ split_strings(const char *str,
 
   if (in_token) 
   {
-    current = realloc(current, current_len + 1);
+    char *tmp = realloc(current, current_len + 1);
+
+    if (!tmp)
+    {
+      free(current);
+      for (int i = 0; i < *count; i ++)
+	free(result[i]);
+      free(result);
+      *count = 0;
+      return NULL;
+    }
+
+    current = tmp;
     current[current_len] = '\0';
     if (*count >= max_tokens) 
     {
-      result = realloc(result, (*count + 1) * sizeof(char *));
+      char **r_tmp = realloc(result, (*count + 1) * sizeof(char *));
+
+      if (!r_tmp)
+      {
+	free(current);
+	for (int i = 0; i < *count; i ++)
+	  free(result[i]);
+	free(result);
+	*count = 0;
+	return NULL;
+      }
+
+      result = r_tmp;
     }
     result[(*count)++] = current;
   } 
@@ -437,7 +499,26 @@ split_strings(const char *str,
     free(current);
   }
 
-  result = realloc(result, *count * sizeof(char *));
+  if (*count == 0)
+  {
+    free(result);
+    return NULL;
+  }
+
+  {
+    char **r_tmp = realloc(result, *count * sizeof(char *));
+
+    if (!r_tmp)
+    {
+      for (int i = 0; i < *count; i ++)
+	free(result[i]);
+      free(result);
+      *count = 0;
+      return NULL;
+    }
+
+    result = r_tmp;
+  }
   return result;
 }
 

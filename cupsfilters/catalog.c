@@ -756,7 +756,17 @@ cfCatalogLoad(const char *location,
 	size_t human_readable_size = sizeof(char) *
 				     (strlen(human_readable) +
 				      strlen(start) + 2);
-	human_readable = realloc(human_readable, human_readable_size);
+	char *tmp = realloc(human_readable, human_readable_size);
+
+	if (!tmp)
+	{
+	  free(human_readable);
+	  human_readable = NULL;
+	  break;
+	}
+
+	human_readable = tmp;
+
 	ptr = human_readable + strlen(human_readable);
 	*ptr = ' ';
 	strncpy(ptr + 1, start,

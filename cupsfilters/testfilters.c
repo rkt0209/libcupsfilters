@@ -1232,12 +1232,34 @@ run_test(
 
 
 
-     clargs = realloc(clargs, (token_index+1)*sizeof(char*));
-     char* tmp_token = (char*)malloc(100*sizeof(char*));
-     strcpy(tmp_token, token);
-      
-     clargs[token_index] = tmp_token;
-     token_index++;
+     {
+       char **tmp_clargs = realloc(clargs, (token_index + 1) * sizeof(char *));
+       if (!tmp_clargs)
+       {
+         // Allocation failed, clean up and abort parsing
+         for (int i = 0; i < token_index; i ++)
+           free(clargs[i]);
+         free(clargs);
+         clargs = NULL;
+         break;
+       }
+
+       clargs = tmp_clargs;
+
+       char* tmp_token = (char*)malloc(100 * sizeof(char *));
+       if (!tmp_token)
+       {
+         for (int i = 0; i < token_index; i ++)
+           free(clargs[i]);
+         free(clargs);
+         clargs = NULL;
+         break;
+       }
+
+       strcpy(tmp_token, token);
+       clargs[token_index] = tmp_token;
+       token_index++;
+     }
    }  
   
    ipp_t* emulated_ipp = load_legacy_attributes(make, model, ppm, ppm_color, duplex, docformats);

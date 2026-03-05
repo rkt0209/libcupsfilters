@@ -686,9 +686,10 @@ flush_tile(cf_image_t *img)		// I - Image
   cf_itile_t	*tile;			// Pointer to tile
 
 
-  bpp = cfImageGetDepth(img);
-  if(img == NULL || img->first == NULL || img->first->tile == NULL)
+  if (img == NULL || img->first == NULL || img->first->tile == NULL)
     return (-1);
+
+  bpp = cfImageGetDepth(img);
 
   tile = img->first->tile;
 
